@@ -2,29 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Heart, Star, Sparkles, Pause, Play, Volume2, VolumeX, Wand2 } from "lucide-react"
-
-const WORDS = [
-  "butterfly",
-  "rainbow",
-  "magic",
-  "forest",
-  "flower",
-  "sparkle",
-  "unicorn",
-  "crystal",
-  "meadow",
-  "dragon",
-  "castle",
-  "treasure",
-  "blossom",
-  "wonder",
-  "whisper",
-  "moonlight",
-  "adventure",
-  "feather",
-  "garden",
-  "starlight",
-]
+import { advanceBearDistance, BEAR_TICK_DISTANCE, BEAR_TICK_MS } from "@/lib/bear-distance"
+import { WORDS } from "@/lib/common-words"
+import { useGameAudio } from "@/hooks/use-game-audio"
 
 const MAX_LIVES = 3
 
@@ -50,6 +30,8 @@ export function TypingGame() {
   const [wordsCompleted, setWordsCompleted] = useState(0)
   const [gameOver, setGameOver] = useState(false)
 
+  const { unlockAudio, playCorrectKey, playWrongKey } = useGameAudio({ soundOn, paused, gameOver })
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   const focusInput = useCallback(() => {
@@ -68,12 +50,38 @@ export function TypingGame() {
     [],
   )
 
+  const advanceBear = useCallback((amount: number) => {
+    setDistance((current) => {
+      const result = advanceBearDistance(current, amount)
+
+      if (result.bearReached) {
+        setLives((currentLives) => {
+          const remaining = currentLives - 1
+          if (remaining <= 0) setGameOver(true)
+          return Math.max(0, remaining)
+        })
+      }
+
+      return result.distance
+    })
+  }, [])
+
+  useEffect(() => {
+    if (paused || gameOver) return
+
+    const interval = window.setInterval(() => advanceBear(BEAR_TICK_DISTANCE), BEAR_TICK_MS)
+    return () => window.clearInterval(interval)
+  }, [advanceBear, gameOver, paused])
+
   const handleChange = (value: string) => {
     if (paused || gameOver) return
+
+    unlockAudio()
 
     // Only accept input that matches the prefix of the target word.
     if (word.startsWith(value)) {
       setTyped(value)
+      if (value) playCorrectKey()
 
       if (value === word) {
         // Word complete!
@@ -81,7 +89,7 @@ export function TypingGame() {
         setScore((s) => s + gained)
         setCombo((c) => c + 1)
         setMagic((m) => Math.min(100, m + 20))
-        setDistance((d) => Math.max(0, d - 25)) // push the bear back
+        advanceBear(-12)
         setWordsCompleted((w) => {
           const total = w + 1
           if (total % 5 === 0) setLevel((l) => l + 1)
@@ -91,21 +99,10 @@ export function TypingGame() {
       }
     } else {
       // Wrong key: break combo, bear gets closer, lose magic.
+      playWrongKey()
       setCombo(0)
       setMagic((m) => Math.max(0, m - 10))
-      setDistance((d) => {
-        const next = Math.min(100, d + 15)
-        if (next >= 100) {
-          // Bear reached you -> lose a life and reset distance.
-          setLives((lv) => {
-            const remaining = lv - 1
-            if (remaining <= 0) setGameOver(true)
-            return Math.max(0, remaining)
-          })
-          return 0
-        }
-        return next
-      })
+      advanceBear(15)
     }
   }
 
@@ -303,7 +300,10 @@ export function TypingGame() {
             </ControlButton>
             <ControlButton
               label="Sound"
-              onClick={() => setSoundOn((s) => !s)}
+              onClick={() => {
+                setSoundOn((s) => !s)
+                unlockAudio()
+              }}
             >
               {soundOn ? <Volume2 className="size-6" /> : <VolumeX className="size-6" />}
             </ControlButton>
