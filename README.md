@@ -1,33 +1,49 @@
-# typing-game
+# Typing Adventure
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+> Type fast, build magic, and keep the bear at a safe distance.
 
-## Built with v0
+<p align="center">
+  <img src="./public/typing-adventure-hero.png" alt="A young adventurer practicing at a glowing keyboard in an enchanted forest while a friendly bear watches from a distance" width="100%" />
+</p>
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## Your Forest Typing Quest
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_nZBRua8UxuDnmedxLoH6gxoxWA7N)
+An enchanted forest is waiting—and so is a curious bear. Type the word on screen before it gets too close. Each correct word earns points, grows your magic, and sends the bear back down the trail. Build a streak, protect your hearts, and see how far your typing adventure can go.
 
-## Getting Started
+## How to Play
 
-First, run the development server:
+1. Start typing the word in the center of the screen.
+2. Finish a word correctly to earn points, increase your combo, and gain magic.
+3. Completing a word moves the bear away, but it steadily walks closer over time.
+4. A wrong key breaks your combo, drains magic, and brings the bear closer.
+5. When the bear reaches you, you lose a heart. Lose all three hearts and the game ends.
+6. Complete five words to reach the next level.
+
+## What Makes It Fun
+
+| Feature | What it does |
+| --- | --- |
+| Points & combos | Correct words earn points, and longer streaks earn more. |
+| Magic meter | Fill it by completing words correctly. |
+| Bear distance | Keep an eye on the meter and type quickly to stay safe. |
+| Levels | Every five completed words raises the level. |
+| Sound | Toggle the correct- and wrong-key sounds whenever you like. |
+| Pause | Take a break, then jump straight back into the adventure. |
+
+## Controls
+
+| Action | Control |
+| --- | --- |
+| Type a word | Keyboard |
+| Pause or resume | Pause button |
+| Turn sound on or off | Sound button |
+| Start a new run | Play Again button after game over |
+
+## Play Locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+Open [http://localhost:3000](http://localhost:3000) and begin your typing quest.
